@@ -1,0 +1,27 @@
+services:
+  nginx:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - 80:80
+    restart: always
+    volumes:
+      - ./logs:/var/log/nginx
+      - ./assets:/usr/share/nginx/assets
+      # - ./html:/usr/share/nginx/html
+      # - ./nginx.conf:/etc/nginx/nginx.conf
+      # - ./default.conf:/etc/nginx/conf.d/default.conf
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./config/nginx.conf
+          target: /etc/nginx/nginx.conf
+
+        - action: sync+restart
+          path: ./config/conf.d/
+          target: /etc/nginx/conf.d/
+
+        - action: sync
+          path: ./html
+          target: /usr/share/nginx/html
